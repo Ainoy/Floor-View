@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<style type="text/css">
+			ul,li{margin: 0;padding: 0;}
+			header{width: 800px;height:1500px;background: #ccc;margin: 0 auto;}
+			.floor{width: 800px;height:800px;margin: 0 auto; font-size: 80px;line-height: 200px;
+			font-weight: bold;text-align: center;}
+			#side_bar{width: 50px;position: fixed;left: 20px;bottom: 400px;border: solid 1px;
+			cursor: pointer;display: none;}
+			#side_bar li{height:30px;font-size: 20px;text-align: center;list-style: none;position: relative;
+			border-bottom: solid 1px;}
+			#side_bar li span{height:30px;width: 50px;position: absolute;text-align: center;
+			top: 0;left: 0;background: red;display: none;}
+		</style>
+	</head>
+	<body>
+		<header></header>
+		<div id="main">
+			<div class="floor" style="background: #FF0000;">家电</div>
+			<div class="floor" style="background: #FFA500;">母婴</div>
+			<div class="floor" style="background: #FFFF00;">零食</div>
+			<div class="floor" style="background: #0000FF;">数码</div>
+			<div class="floor" style="background: deepskyblue;">户外</div>
+		</div>
+
+		<ul id="side_bar">
+			<li>1L<span>家电</span></li>
+			<li>2L<span>母婴</span></li>
+			<li>3L<span>零食</span></li>
+			<li>4L<span>数码</span></li>
+			<li>5L<span>户外</span></li>
+			<li>Top</li>
+		</ul>
+		<script src="lib/jquery/jquery-1.12.4.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			$(function(){
+				var height = $(".floor:first").offset().top,
+					winHeight = $(window).height(),
+					isRun = false;
+				$(window).on("scroll",function(){
+					if(isRun)
+						return;
+					var scrollHeight = $(window).scrollTop();
+					if(scrollHeight >= height - winHeight/2){
+						$("#side_bar").stop().fadeIn(500);
+					}else{
+						$("#side_bar").stop().fadeOut(500);
+					}
+					
+					$(".floor").each(function(index,element){
+						
+						var currentHeight = $(".floor").eq(index).offset().top;
+						
+						if(scrollHeight >= currentHeight - winHeight/2){
+							$("li").eq(index).addClass("curr").children("span").show()
+								   .end().siblings().removeClass("curr").children("span").hide();
+						}
+						
+					});
+					
+				});
+				$("#side_bar").on("mouseenter","li:not(:last)",function(){
+					$(this).children("span").show();
+				}).on("mouseleave","li:not(:last)",function(){
+					$(this).not(".curr").children("span").hide();
+				}).on("click","li:not(:last)",function(){
+					var _index = $(this).index();
+					var _top = $(".floor").eq(_index).offset().top;
+					$("html,body").stop().animate({scrollTop:_top},2000,function(){
+						isRun = false;
+					});
+					isRun = true;
+					$(this).addClass("curr").children("span").show()
+						   .end().siblings().removeClass("curr").children("span").hide();
+				});
+				$("#side_bar").on("click", "li:last",function(){
+					$("html,body").stop().animate({scrollTop:0},1000,function(){
+					})					
+				});
+			})
+		</script>
+	</body>
+</html>
